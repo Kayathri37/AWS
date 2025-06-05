@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Register {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String emailId;
     private String location;
@@ -21,7 +23,6 @@ public class Register {
 
 
     public Register(String name, String emailId, String location, int age, boolean isActive, String password) {
-
         this.name = name;
         this.emailId = emailId;
         this.location = location;
