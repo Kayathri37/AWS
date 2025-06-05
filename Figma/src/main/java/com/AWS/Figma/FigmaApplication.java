@@ -9,5 +9,4 @@ public class FigmaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FigmaApplication.class, args);
 	}
-
 }
