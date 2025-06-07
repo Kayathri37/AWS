@@ -22,7 +22,8 @@ public class Register {
     private String password;
 
 
-    public Register(String name, String emailId, String location, int age, boolean isActive, String password) {
+    public Register(long id,String name, String emailId, String location, int age, boolean isActive, String password) {
+        this.id = id;
         this.name = name;
         this.emailId = emailId;
         this.location = location;

@@ -13,8 +13,6 @@ import com.AWS.Figma.Facade.RegisterValidation;
 import com.AWS.Figma.Repo.RegisterRepo;
 import com.AWS.Figma.util.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -33,7 +31,7 @@ public class ApiService {
     @Autowired
     RegisterRepo registerRepo;
 
-    public ApiResponse create(SingUpDto singUpDto) {
+    public ApiResponse singup(SingUpDto singUpDto) {
 
         ApiResponse apiResponse = new ApiResponse();
         List<error> check = registerValidation.validateTheRegisterData(singUpDto);

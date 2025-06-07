@@ -19,9 +19,11 @@ public class JwtToken {
 
 
         return Jwts.builder()
-                .setIssuer(String.valueOf(register.getEmailId()))
+                .setSubject(register.getEmailId())
+                .claim("id", register.getId())
                 .signWith(key)
                 .compact();
+
     }
 
     public Claims verifyToken(String token) {

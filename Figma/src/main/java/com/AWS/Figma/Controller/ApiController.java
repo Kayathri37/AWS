@@ -4,6 +4,7 @@ package com.AWS.Figma.Controller;
 
 
 import com.AWS.Figma.DTO.ApiResponse;
+import com.AWS.Figma.DTO.LoginRequest;
 import com.AWS.Figma.DTO.SingUpDto;
 import com.AWS.Figma.Service.ApiService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,17 @@ public class ApiController {
     ApiService apiService;
 
 
-    @PostMapping("/singup")
-    public ResponseEntity<ApiResponse> create(@RequestBody SingUpDto signupdto) {
-
-        ApiResponse apiResponse = apiService.create(signupdto);
-
+    // ✅ Fix in ApiController.java
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse> signup(@RequestBody SingUpDto signupdto) {
+        ApiResponse apiResponse = apiService.singup(signupdto);
         return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> Login(@RequestBody LoginRequest loginRequest) {
+        ApiResponse apiResponse = apiService.login(loginRequest);
+        return ResponseEntity.status(apiResponse.getStatus()).body(apiResponse);
+
     }
 }
