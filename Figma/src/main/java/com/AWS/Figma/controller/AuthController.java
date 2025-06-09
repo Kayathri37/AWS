@@ -1,54 +1,47 @@
 package com.AWS.Figma.controller;
 
-import com.AWS.Figma.JwtUtility.JwtUtil;
-import com.AWS.Figma.dto.LoginRequest;
-import com.AWS.Figma.dto.RegisterRequest;
 
-import com.AWS.Figma.service.UserService;
+import com.AWS.Figma.dto.AuthRequest;
+import com.AWS.Figma.entity.User;
+import com.AWS.Figma.repository.UserRepository;
+import com.AWS.Figma.security.JwtUtil;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.CachingUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Collections;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-
     @Autowired
-    private UserService userService;
-
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest request) {
-        userService.registerUser(request);
-        return ResponseEntity.ok("User registered successfully");
+    public String registerUser(@RequestBody User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            return "Email already in use";
+        }
+        userRepository.save(user);
+        return "User registered successfully";
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()
-                )
+    public String loginUser(@RequestBody AuthRequest authRequest) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
         );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtil.generateToken(authentication.getName());
-
-        return ResponseEntity.ok(Collections.singletonMap("token", jwt));
+        UserDetailsService userDetailsService = null;
+        UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
+        return jwtUtil.generateToken(userDetails.getUsername());
     }
-
-
-
 }
