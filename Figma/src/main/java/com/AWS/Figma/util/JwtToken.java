@@ -32,7 +32,7 @@ public class JwtToken {
         }
 
         return Jwts.parser()
-                .setSigningKey(key) // your secret key
+                .setSigningKey(key)
                 .parseClaimsJws(token)
                 .getBody();
     }
