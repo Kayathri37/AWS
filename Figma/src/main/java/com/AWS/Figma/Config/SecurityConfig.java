@@ -12,12 +12,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for APIs
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup","/login","/addItem").permitAll() // 👈 Allow public access
-                        .anyRequest().authenticated() // 👈 All other endpoints require login
+                        .requestMatchers("/signup","/login","/addItem","/editItem/{id}","/item/{id}","/addQuantity/{id}").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .httpBasic(Customizer.withDefaults()); // Optional: enable basic auth for testing
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

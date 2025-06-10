@@ -21,6 +21,5 @@ public class LoginRequest {
 
     private String password;
 
-    // Getters and Setters
 
 }
