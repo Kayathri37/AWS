@@ -8,6 +8,8 @@ import com.AWS.Figma.InventoryManagement.Repo.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.Query;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +17,7 @@ public class InventoryService {
 
     @Autowired
     private InventoryRepository repository;
+    private Query query;
 
     public InventoryItem addItem(AddInventoryItemDto dto) {
         InventoryItem item = new InventoryItem();
@@ -103,6 +106,11 @@ public class InventoryService {
         repository.save(item);
         return true;
     }
+    public List<InventoryItem> searchByDescriptionPrefix(String prefix) {
+        return repository.findByDescriptionStartingWithIgnoreCase(prefix);
+    }
+
+
 
 
 }
