@@ -3,6 +3,7 @@ package com.AWS.Figma.InventoryManagement.Controller;
 import com.AWS.Figma.InventoryManagement.Dto.AddInventoryItemDto;
 import com.AWS.Figma.InventoryManagement.Dto.EditInventoryItemDto;
 import com.AWS.Figma.InventoryManagement.Dto.QuantityUpdateRequest;
+import com.AWS.Figma.InventoryManagement.Dto.RfidTagDto;
 import com.AWS.Figma.InventoryManagement.Entity.InventoryItem;
 import com.AWS.Figma.InventoryManagement.Service.InventoryService;
 import jakarta.validation.Valid;
@@ -102,6 +103,23 @@ public class InventoryController {
                     .body("No matching inventory items found.");
         } else {
             return ResponseEntity.ok(items);
+        }
+    }
+    @GetMapping("/generateRfidTags/{id}")
+    public ResponseEntity<?> generateRfidTags(
+            @PathVariable Long id,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing or malformed Authorization header");
+        }
+
+        try {
+            List<RfidTagDto> tags = service.generateRfidTags(id);
+            return ResponseEntity.ok(tags);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 

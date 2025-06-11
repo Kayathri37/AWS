@@ -2,6 +2,7 @@ package com.AWS.Figma.InventoryManagement.Service;
 
 import com.AWS.Figma.InventoryManagement.Dto.AddInventoryItemDto;
 import com.AWS.Figma.InventoryManagement.Dto.EditInventoryItemDto;
+import com.AWS.Figma.InventoryManagement.Dto.RfidTagDto;
 import com.AWS.Figma.InventoryManagement.Dto.StockStatus;
 import com.AWS.Figma.InventoryManagement.Entity.InventoryItem;
 import com.AWS.Figma.InventoryManagement.Repo.InventoryRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -110,7 +112,30 @@ public class InventoryService {
         return repository.findByDescriptionStartingWithIgnoreCase(prefix);
     }
 
+    public List<RfidTagDto> generateRfidTags(Long itemId) {
+        Optional<InventoryItem> optionalItem = repository.findById(itemId);
+        if (optionalItem.isEmpty()) {
+            throw new IllegalArgumentException("Item not found with ID: " + itemId);
+        }
+
+        InventoryItem item = optionalItem.get();
+        String description = item.getDescription();
+        int quantity = item.getQuantity();
+
+        List<RfidTagDto> tags = new ArrayList<>();
+
+        long baseCode = 1000000000000L + item.getId() * 100; // base RF ID per item
+        for (int i = 0; i < quantity; i++) {
+            String tagCode = String.format("%016d", baseCode + i);
+            tags.add(new RfidTagDto(description, tagCode));
+        }
+
+        return tags;
+    }
 
 
 
 }
+
+
+
