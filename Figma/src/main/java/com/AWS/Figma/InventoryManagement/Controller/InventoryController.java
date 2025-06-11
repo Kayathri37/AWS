@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class InventoryController {
     @Autowired
@@ -55,10 +57,12 @@ public class InventoryController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item not found.");
         }
     }
+
     @GetMapping("/item/{id}")
     public ResponseEntity<?> getItem(@PathVariable Long id) {
         return ResponseEntity.ok(service.getItemById(id));
     }
+
     @PutMapping("/addQuantity/{id}")
     public ResponseEntity<String> addQuantity(
             @PathVariable Long id,
@@ -81,5 +85,24 @@ public class InventoryController {
         }
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByDescriptionPrefix(
+            @RequestParam("q") String keyword,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing or malformed Authorization header");
+        }
+
+        List<InventoryItem> items = service.searchByDescriptionPrefix(keyword);
+
+        if (items.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No matching inventory items found.");
+        } else {
+            return ResponseEntity.ok(items);
+        }
+    }
 
 }
