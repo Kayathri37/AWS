@@ -124,7 +124,7 @@ public class InventoryService {
 
         List<RfidTagDto> tags = new ArrayList<>();
 
-        long baseCode = 1000000000000L + item.getId() * 100; // base RF ID per item
+        long baseCode = 1000000000000L + item.getId() * 100;
         for (int i = 0; i < quantity; i++) {
             String tagCode = String.format("%016d", baseCode + i);
             tags.add(new RfidTagDto(description, tagCode));
