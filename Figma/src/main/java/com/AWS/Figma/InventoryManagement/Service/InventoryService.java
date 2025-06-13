@@ -1,11 +1,11 @@
 package com.AWS.Figma.InventoryManagement.Service;
 
+import com.AWS.Figma.InventoryManagement.DAO.InventoryDao;
 import com.AWS.Figma.InventoryManagement.Dto.AddInventoryItemDto;
 import com.AWS.Figma.InventoryManagement.Dto.EditInventoryItemDto;
 import com.AWS.Figma.InventoryManagement.Dto.RfidTagDto;
 import com.AWS.Figma.InventoryManagement.Dto.StockStatus;
 import com.AWS.Figma.InventoryManagement.Entity.InventoryItem;
-import com.AWS.Figma.InventoryManagement.Repo.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,8 @@ import java.util.Optional;
 public class InventoryService {
 
     @Autowired
-    private InventoryRepository repository;
+    private InventoryDao inventoryDao;
+
     private Query query;
 
     public InventoryItem addItem(AddInventoryItemDto dto) {
@@ -35,37 +36,31 @@ public class InventoryService {
         // Set stock status
         if (dto.getQuantity() <= 0) {
             item.setStatus(StockStatus.OUT_OF_STOCK);
-        }
-            else if (dto.getQuantity()>=10) {
-
+        } else if (dto.getQuantity() >= 10) {
             item.setStatus(StockStatus.IN_STOCK);
         } else {
             item.setStatus(StockStatus.NEARING_STOCK);
         }
 
-        return repository.save(item);
+        return inventoryDao.saveItem(item);
     }
 
-
     public boolean editItem(Long id, EditInventoryItemDto dto, String token) {
-        Optional<InventoryItem> optionalItem = repository.findById(id);
+        Optional<InventoryItem> optionalItem = inventoryDao.findById(id);
 
         if (optionalItem.isEmpty()) {
-            System.out.println(">> No item found with ID: " + id); // 🔍 LOG
+            System.out.println(">> No item found with ID: " + id);
             return false;
         }
 
         InventoryItem item = optionalItem.get();
 
-        // Construct description properly
         String desc = dto.getCategory() + " / " + dto.getBrand() + " / " + dto.getType();
         item.setDescription(desc);
-
         item.setSamplePrice(dto.getSamplePrice());
         item.setQuantity(dto.getStockCount());
         item.setRemark(dto.getRemark());
 
-        // Status update logic
         if (dto.getStockCount() <= 0) {
             item.setStatus(StockStatus.OUT_OF_STOCK);
         } else if (dto.getStockCount() <= dto.getStockThreshold()) {
@@ -74,46 +69,44 @@ public class InventoryService {
             item.setStatus(StockStatus.IN_STOCK);
         }
 
-        repository.save(item);
-
+        inventoryDao.saveItem(item);
         System.out.println(">> Item updated successfully: " + item.getId());
         return true;
     }
+
     public InventoryItem getItemById(Long id) {
-        return repository.findById(id).orElse(null);
+        return inventoryDao.findById(id).orElse(null);
     }
+
     public boolean addQuantity(Long id, int quantityToAdd) {
-        Optional<InventoryItem> optionalItem = repository.findById(id);
+        Optional<InventoryItem> optionalItem = inventoryDao.findById(id);
         if (optionalItem.isEmpty()) {
             return false;
         }
 
         InventoryItem item = optionalItem.get();
 
-
         int updatedQuantity = item.getQuantity() + quantityToAdd;
         item.setQuantity(updatedQuantity);
 
-
         if (updatedQuantity <= 0) {
             item.setStatus(StockStatus.OUT_OF_STOCK);
-
-        } else if (updatedQuantity>=10) {
+        } else if (updatedQuantity >= 10) {
             item.setStatus(StockStatus.IN_STOCK);
-
         } else {
             item.setStatus(StockStatus.NEARING_STOCK);
         }
 
-        repository.save(item);
+        inventoryDao.saveItem(item);
         return true;
     }
+
     public List<InventoryItem> searchByDescriptionPrefix(String prefix) {
-        return repository.findByDescriptionStartingWithIgnoreCase(prefix);
+        return inventoryDao.findByDescriptionPrefix(prefix);
     }
 
     public List<RfidTagDto> generateRfidTags(Long itemId) {
-        Optional<InventoryItem> optionalItem = repository.findById(itemId);
+        Optional<InventoryItem> optionalItem = inventoryDao.findById(itemId);
         if (optionalItem.isEmpty()) {
             throw new IllegalArgumentException("Item not found with ID: " + itemId);
         }
@@ -132,10 +125,4 @@ public class InventoryService {
 
         return tags;
     }
-
-
-
 }
-
-
-
