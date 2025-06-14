@@ -25,7 +25,6 @@ public class InventoryService {
     public InventoryItem addItem(AddInventoryItemDto dto) {
         InventoryItem item = new InventoryItem();
 
-        // description = category / brand / type
         String description = dto.getCategory() + " / " + dto.getBrand() + " / " + dto.getType();
         item.setDescription(description);
 
@@ -33,7 +32,6 @@ public class InventoryService {
         item.setSamplePrice(dto.getSamplePrice());
         item.setRemark(dto.getRemark());
 
-        // Set stock status
         if (dto.getQuantity() <= 0) {
             item.setStatus(StockStatus.OUT_OF_STOCK);
         } else if (dto.getQuantity() >= 10) {
