@@ -1,9 +1,6 @@
 package com.AWS.Figma.Category.CategoryController;
 
-import com.AWS.Figma.Category.Dto.CreateBrandRequest;
-import com.AWS.Figma.Category.Dto.CreateCategoryRequest;
-import com.AWS.Figma.Category.Dto.CreateTypeRequest;
-import com.AWS.Figma.Category.Dto.EditCategoryRequest;
+import com.AWS.Figma.Category.Dto.*;
 import com.AWS.Figma.Category.Entity.Brand;
 import com.AWS.Figma.Category.Entity.Category;
 import com.AWS.Figma.Category.Entity.Type;
@@ -41,19 +38,16 @@ public class CategoryController {
             @RequestBody CreateCategoryRequest request,
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
-        // Validate Authorization header
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Missing or malformed Authorization header");
         }
 
-        // Validate input
         if (request.getName() == null || request.getName().trim().isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Category name is required");
         }
 
-        // Create and save category
         Category savedCategory = categoryService.createCategory(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCategory);
     }
@@ -85,14 +79,27 @@ public class CategoryController {
 
 
     @PostMapping("/createType")
-    public Type createType(@RequestBody CreateTypeRequest request) {
-        Brand brand = brandRepo.findById(request.getBrandId())
-                .orElseThrow(() -> new RuntimeException("Brand not found"));
+    public ResponseEntity<?> createType(
+            @Valid @RequestBody CreateTypeRequest request,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
-        Type type = new Type();
-        type.setName(request.getTypeName());
-        type.setBrand(brand);
-        return typeRepo.save(type);
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing or malformed Authorization header");
+        }
+
+        Brand brand = brandRepo.findById(request.getBrandId()).orElse(null);
+        if (brand == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Brand not found with ID: " + request.getBrandId());
+        }
+
+        try {
+            Type type = categoryService.createType(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(type);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
     @PutMapping("/editCategory/{id}")
     public ResponseEntity<?> editCategory(
@@ -111,7 +118,26 @@ public class CategoryController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+    @PutMapping("/editBrand/{categoryId}")
+    public ResponseEntity<?> editBrand(@PathVariable Long categoryId,
+                                       @RequestBody EditBrandRequest request,
+                                       @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing or malformed Authorization header");
         }
+
+        try {
+            Brand updated = categoryService.editBrand(categoryId, request);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
+    }
+
+
+}
 
 
 

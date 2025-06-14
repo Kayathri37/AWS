@@ -17,10 +17,8 @@ public class Brand {
 
     private String name;
 
-    // If you have a relation to Category
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    // Getters and Setters
 }

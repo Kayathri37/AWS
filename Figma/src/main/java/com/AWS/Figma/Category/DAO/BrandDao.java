@@ -24,4 +24,13 @@ public class BrandDao {
             return Optional.empty();
         }
     }
+    public Brand editBrand(Brand brand) {
+        entityManager.createNativeQuery(BrandQuery.UPDATE_BRAND_BY_ID)
+                .setParameter("name", brand.getName())
+                .setParameter("id",   brand.getId())
+                .executeUpdate();
+
+        return brand;
+    }
 }
+

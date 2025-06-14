@@ -9,13 +9,11 @@ import lombok.Setter;
 @Entity
 public class Category {
 
-    // Getters and setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // or AUTO, SEQUENCE based on DB
     private Long id;
 
     private String name;
 
-    // Other fields and methods...
 
 }
