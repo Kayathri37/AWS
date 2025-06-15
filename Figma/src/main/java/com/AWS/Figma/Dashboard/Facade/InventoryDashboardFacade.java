@@ -1,6 +1,7 @@
 package com.AWS.Figma.Dashboard.Facade;
 
 import com.AWS.Figma.Dashboard.DTO.InventoryDashboardDto;
+import com.AWS.Figma.Dashboard.DTO.NearingStockCountDto;
 import com.AWS.Figma.Dashboard.DashboardService.InventoryDashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,5 +14,8 @@ public class InventoryDashboardFacade {
 
     public InventoryDashboardDto fetchTotalItemCount() {
         return service.getTotalItemCount();
+    }
+    public NearingStockCountDto viewNearingStockCount() {
+        return service.getNearingStockCount();
     }
 }
