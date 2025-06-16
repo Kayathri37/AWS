@@ -5,9 +5,12 @@ import com.AWS.Figma.dto.UserReqDto;
 import com.AWS.Figma.entity.User;
 import com.AWS.Figma.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,6 +39,18 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new ResponseDto("User registered successfully", true);
     }
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                new ArrayList<>()
+        );
+    }
+
 
     @Override
     public User findByEmail(String email) {
