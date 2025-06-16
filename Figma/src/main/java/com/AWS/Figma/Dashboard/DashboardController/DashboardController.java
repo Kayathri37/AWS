@@ -1,26 +1,29 @@
 package com.AWS.Figma.Dashboard.DashboardController;
 
-import com.AWS.Figma.Dashboard.DTO.InventoryDashboardDto;
-import com.AWS.Figma.Dashboard.DTO.NearingStockCountDto;
+import com.AWS.Figma.Dashboard.DTO.InventorySummaryDto;
 import com.AWS.Figma.Dashboard.Facade.InventoryDashboardFacade;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 public class DashboardController {
 
-    @Autowired
-    private InventoryDashboardFacade facade;
+    private final InventoryDashboardFacade facade;
 
-    @GetMapping("/total items")
-    public ResponseEntity<InventoryDashboardDto> getTotalItems() {
-        InventoryDashboardDto dto = facade.fetchTotalItemCount();
-        return ResponseEntity.ok(dto);
-    }
-    @GetMapping("/nearing stock count")
-    public ResponseEntity<NearingStockCountDto> showNearingStockCount() {
-        return ResponseEntity.ok(facade.viewNearingStockCount());
+    @GetMapping("/InventorySummary")
+    public ResponseEntity<?> InventorySummary(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Missing or malformed Authorization header");
+        }
+
+        InventorySummaryDto summary = facade.getInventorySummary();
+
+        return ResponseEntity.ok(summary);
     }
 }
-
