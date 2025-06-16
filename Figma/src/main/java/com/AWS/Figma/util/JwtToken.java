@@ -1,11 +1,14 @@
 package com.AWS.Figma.util;
 import com.AWS.Figma.Entity.Register;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Date;
+
 import io.jsonwebtoken.Jwts;
 
 @Component
@@ -15,15 +18,13 @@ public class JwtToken {
     private static final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String createToken(Register register) {
-
-
-
         return Jwts.builder()
                 .setSubject(register.getEmailId())
                 .claim("id", register.getId())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                 .signWith(key)
                 .compact();
-
     }
 
     public Claims verifyToken(String token) {
@@ -31,9 +32,15 @@ public class JwtToken {
             throw new IllegalArgumentException("JWT token is missing or empty");
         }
 
-        return Jwts.parser()
-                .setSigningKey(key)
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException e) {
+            throw new RuntimeException("JWT token has expired", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid JWT token", e);
+        }
     }
 }
