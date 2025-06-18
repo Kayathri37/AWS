@@ -1,6 +1,7 @@
 package com.AWS.Figma.Dashboard.Facade;
 
 import com.AWS.Figma.Dashboard.DAO.InventoryDashboardDAO;
+import com.AWS.Figma.Dashboard.DTO.DailySalesDto;
 import com.AWS.Figma.Dashboard.DTO.NearingStockItemDto;
 import com.AWS.Figma.Dashboard.DTO.OutOfStockItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,5 +36,9 @@ public class InventoryDashboardFacade {
     }
     public List<OutOfStockItemDto> viewAllOutOfStock() {
         return dao.getAllOutOfStockItems();
+    }
+
+    public List<DailySalesDto> getDailySales(int month, int year) {
+        return dao.getDailySales(month, year);
     }
 }

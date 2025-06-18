@@ -1,5 +1,6 @@
 package com.AWS.Figma.Dashboard.Query;
 
+import com.AWS.Figma.Dashboard.DTO.DailySalesDto;
 import com.AWS.Figma.Dashboard.DTO.NearingStockItemDto;
 import com.AWS.Figma.Dashboard.DTO.OutOfStockItemDto;
 import com.AWS.Figma.InventoryManagement.Dto.StockStatus;
@@ -86,6 +87,24 @@ public class InventoryDashboardQuery {
 
         return entityManager.createQuery(jpql, OutOfStockItemDto.class)
                 .setParameter("status", StockStatus.OUT_OF_STOCK)
+                .getResultList();
+    }
+    public List<DailySalesDto> fetchDailySales(int month, int year) {
+
+        String jpql = """
+          SELECT new com.AWS.Figma.Dashboard.DTO.DailySalesDto(
+    EXTRACT(DAY FROM s.saleDate),
+    SUM(s.quantity)
+)
+FROM Sale s
+WHERE EXTRACT(MONTH FROM s.saleDate) = :month
+  AND EXTRACT(YEAR FROM s.saleDate) = :year
+GROUP BY EXTRACT(DAY FROM s.saleDate)
+ORDER BY EXTRACT(DAY FROM s.saleDate)""";
+
+        return entityManager.createQuery(jpql, DailySalesDto.class)
+                .setParameter("month", month)
+                .setParameter("year", year)
                 .getResultList();
     }
 }

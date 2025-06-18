@@ -1,5 +1,6 @@
 package com.AWS.Figma.Dashboard.DAO;
 
+import com.AWS.Figma.Dashboard.DTO.DailySalesDto;
 import com.AWS.Figma.Dashboard.DTO.NearingStockItemDto;
 import com.AWS.Figma.Dashboard.DTO.OutOfStockItemDto;
 import com.AWS.Figma.Dashboard.Query.InventoryDashboardQuery;
@@ -38,5 +39,8 @@ public class InventoryDashboardDAO {
     }
     public List<OutOfStockItemDto> getAllOutOfStockItems() {
         return query.fetchAllOutOfStockItems();
+    }
+    public List<DailySalesDto> getDailySales(int month, int year) {
+        return query.fetchDailySales(month, year);
     }
 }

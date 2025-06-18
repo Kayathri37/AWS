@@ -14,7 +14,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/signup","/login","/addItem","/editItem/{id}","/item/{id}","/addQuantity/{id}","/search","/generateRfidTags/{id}","/createCategory","/createBrand","/createType","/editCategory/{id}","/editbrand","/editBrand/{categoryId}","/total items","/nearing stock count","/out of stock count","/InventorySummary","/top5 nearing stock","/nearing stock/all","/top5 out of stock","/out of stock/all").permitAll()
+                        .requestMatchers("/signup","/login","/addItem","/editItem/{id}","/item/{id}","/addQuantity/{id}","/search","/generateRfidTags/{id}","/createCategory","/createBrand","/createType","/editCategory/{id}","/editbrand","/editBrand/{categoryId}","/total items","/nearing stock count","/out of stock count","/InventorySummary","/top5 nearing stock","/nearing stock/all","/top5 out of stock","/out of stock/all","/Salessummary").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

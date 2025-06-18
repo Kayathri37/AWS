@@ -1,10 +1,7 @@
 package com.AWS.Figma.Dashboard.DashboardController;
 
-import com.AWS.Figma.Dashboard.DTO.InventorySummaryDto;
-import com.AWS.Figma.Dashboard.DTO.NearingStockItemDto;
-import com.AWS.Figma.Dashboard.DTO.OutOfStockItemDto;
+import com.AWS.Figma.Dashboard.DTO.*;
 import com.AWS.Figma.Dashboard.DashboardService.InventoryDashboardService;
-import com.AWS.Figma.Dashboard.Facade.InventoryDashboardFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,6 +76,22 @@ public ResponseEntity<List<NearingStockItemDto>> allNearingStock(
 
         List<OutOfStockItemDto> items = inventoryDashboardService.getAllOutOfStockItems();
         return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/Salessummary")
+    public ResponseEntity<MonthlySalesSummaryDto> getMonthlySalesSummary(
+            @RequestParam int month,
+            @RequestParam int year,
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        MonthlySalesSummaryDto summary =
+                inventoryDashboardService.getMonthlySalesSummary(month, year);
+
+        return ResponseEntity.ok(summary);
     }
 }
 
