@@ -12,7 +12,6 @@ public class ItemDto {
 
     public ItemDto() {}
 
-    // ✅ Corrected Constructor
     public ItemDto(Long id, String description, Integer stockQuantity, Integer minStockLevel, StockStatus status, String flavor) {
         this.id = id;
         this.description = description;
@@ -22,7 +21,7 @@ public class ItemDto {
         this.flavor = flavor;
     }
 
-    // Getters and Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

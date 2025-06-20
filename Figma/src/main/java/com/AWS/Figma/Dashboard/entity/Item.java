@@ -48,7 +48,6 @@ public class Item {
         updateStatus();
     }
 
-    // Update stock status based on current quantity
     public void updateStatus() {
         if (stockQuantity == 0) {
             this.status = StockStatus.OUT_OF_STOCK;
@@ -65,7 +64,6 @@ public class Item {
         updateStatus();
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

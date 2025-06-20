@@ -16,8 +16,6 @@ public class DailySalesDto {
         this.totalAmount = totalAmount;
         this.dayOfMonth = date.getDayOfMonth();
     }
-
-    // Getters and Setters
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { 
         this.date = date; 

@@ -15,7 +15,6 @@ public class VisitorMapper {
         Visitor visitor = new Visitor();
         visitor.setName(dto.getName());
         visitor.setOrganisation(dto.getOrganisation());
-        // rfiId will be set in service before save
         return visitor;
     }
 }

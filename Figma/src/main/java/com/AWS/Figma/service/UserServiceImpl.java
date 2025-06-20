@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     public ResponseDto signup(UserReqDto userReqDto) {
         User user = userReqDto.toEntity();
 
-        // Check for duplicates
+
         if (userRepository.existsByEmail(user.getEmail())) {
             return new ResponseDto("Error: Email already exists", false);
         }
@@ -32,10 +32,10 @@ public class UserServiceImpl implements UserService {
             return new ResponseDto("Error: Mobile number already registered", false);
         }
 
-        // Encrypt the password using BCrypt
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Save encrypted user
+
         userRepository.save(user);
         return new ResponseDto("User registered successfully", true);
     }

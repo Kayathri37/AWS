@@ -51,7 +51,7 @@ public class ItemService {
 
     public ItemDto createItem(ItemDto itemDto) {
         Item item = new Item(itemDto.getDescription(), itemDto.getStockQuantity(), itemDto.getMinStockLevel());
-        item.setFlavor(itemDto.getFlavor()); // ✅ Include this
+        item.setFlavor(itemDto.getFlavor());
         Item savedItem = itemRepository.save(item);
         return convertToDto(savedItem);
     }
@@ -82,7 +82,7 @@ public class ItemService {
                 item.getStockQuantity(),
                 item.getMinStockLevel(),
                 item.getStatus(),
-                item.getFlavor() // ✅ Add this line to match the constructor
+                item.getFlavor()
         );
     }
 }

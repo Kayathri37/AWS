@@ -39,12 +39,10 @@ public class SalesService {
             throw new ItemNotFoundException("Item not found with id: " + salesDto.getItemId());
         }
 
-        // Check if enough stock is available
         if (item.getStockQuantity() < salesDto.getItemsSold()) {
             throw new IllegalArgumentException("Not enough stock available. Current stock: " + item.getStockQuantity());
         }
 
-        // Create sales record
         Sales sales = new Sales();
         sales.setSaleDate(salesDto.getSaleDate());
         sales.setItemsSold(salesDto.getItemsSold());
@@ -53,7 +51,7 @@ public class SalesService {
 
         Sales savedSales = salesDao.save(sales);
 
-        // Update item stock
+
         item.setStockQuantity(item.getStockQuantity() - salesDto.getItemsSold());
         itemDao.save(item);
 
@@ -65,7 +63,7 @@ public class SalesService {
         // Get actual sales data
         List<DailySalesDto> actualSales = salesDao.getDailySalesForMonth(year, month);
 
-        // Create a complete list for all days in the month
+
         YearMonth yearMonth = YearMonth.of(year, month);
         int daysInMonth = yearMonth.lengthOfMonth();
 
@@ -74,7 +72,7 @@ public class SalesService {
         for (int day = 1; day <= daysInMonth; day++) {
             LocalDate date = LocalDate.of(year, month, day);
 
-            // Find actual sales for this day
+
             DailySalesDto dailySales = actualSales.stream()
                     .filter(s -> s.getDate().equals(date))
                     .findFirst()

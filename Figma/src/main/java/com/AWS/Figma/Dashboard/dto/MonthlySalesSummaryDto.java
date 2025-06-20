@@ -17,7 +17,7 @@ public class MonthlySalesSummaryDto {
         this.year = year;
     }
 
-    // Getters and Setters
+
     public Integer getTotalItemsSold() { return totalItemsSold; }
     public void setTotalItemsSold(Integer totalItemsSold) { this.totalItemsSold = totalItemsSold; }
 

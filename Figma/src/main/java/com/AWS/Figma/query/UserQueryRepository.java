@@ -15,7 +15,7 @@ public interface UserQueryRepository extends Repository<User, Long> {
 
     Optional<User> findByEmail(String email);
 
-    // Custom query example (optional)
+
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.active = true")
     Optional<User> findActiveUserByEmail(String email);
 }

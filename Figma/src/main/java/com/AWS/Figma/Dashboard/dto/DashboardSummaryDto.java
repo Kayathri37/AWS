@@ -11,7 +11,7 @@ public class DashboardSummaryDto {
         this.nearingStockItems = nearingStockItems;
     }
 
-    // Getters and Setters
+
     public Long getTotalItems() { return totalItems; }
     public void setTotalItems(Long totalItems) { this.totalItems = totalItems; }
 

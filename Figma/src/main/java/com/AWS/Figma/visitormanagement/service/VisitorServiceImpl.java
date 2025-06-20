@@ -15,19 +15,18 @@ public class VisitorServiceImpl implements VisitorService {
 
     @Autowired
     private VisitorDao visitorDao;
-
     @Override
     public VisitorDto addVisitor(VisitorDto dto) {
         Visitor entity = VisitorMapper.toEntity(dto);
 
-
         long nextId = visitorDao.count() + 1;
-        String rfiId = String.format("RFI%04d", nextId);
+        String rfiId = String.format("%014d", nextId);
         entity.setRfiId(rfiId);
 
         Visitor saved = visitorDao.save(entity);
         return VisitorMapper.toDto(saved);
     }
+
 
     @Override
     public List<VisitorDto> getAllVisitors() {

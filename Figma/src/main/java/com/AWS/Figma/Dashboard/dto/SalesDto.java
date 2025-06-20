@@ -20,7 +20,7 @@ public class SalesDto {
     @NotNull(message = "Item ID is required")
     private Long itemId;
 
-    private String itemDescription; // For response
+    private String itemDescription;
 
     public SalesDto() {}
 
@@ -33,7 +33,6 @@ public class SalesDto {
         this.itemDescription = itemDescription;
     }
 
-    // Getters and Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
